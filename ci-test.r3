@@ -1,9 +1,12 @@
-Rebol []
+Rebol [title: "Identify Test script"]
 
-try [system/modules/identify: none]
-try [unset 'identify]
+;; make sure that we load a fresh extension
+try [system/modules/identify: none unset 'identify]
 
-import %identify.reb
+;; use current directory as a modules location
+system/options/modules: what-dir
+
+import identify
 import mime-types
 
 failed: 0

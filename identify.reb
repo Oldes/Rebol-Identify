@@ -17,7 +17,7 @@ Rebol [
 identify: func [
 	"Identifies file types using their magic numbers."
 	file [file! url! binary!]
-	return: [none! word!]
+	;return: [none! word!] ;; this specification is available since version 3.18.5!
 ][
 	unless binary? file [file: read/part/binary file 262]
 	foreach [type rule] types [
