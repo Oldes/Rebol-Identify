@@ -7,7 +7,7 @@ try [system/modules/identify: none unset 'identify]
 system/options/modules: what-dir
 
 import identify
-import mime-types
+import https://src.rebol.tech/mezz/codec-mime-types.reb
 
 failed: 0
 
