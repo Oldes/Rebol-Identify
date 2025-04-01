@@ -4,6 +4,8 @@
 # Rebol/Identify
 [Rebol3](https://github.com/Oldes/Rebol3) `identify` function which identifies file types using their _magic numbers_.
 
+![rebol-identifier](https://github.com/user-attachments/assets/048889bc-b4d0-429f-9771-fe67b0c69e0c)
+
 ## Usage
 ```rebol
 import identify               ;; import the module
