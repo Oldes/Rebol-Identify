@@ -120,13 +120,23 @@ types: make map! [
 	%m4v    #{0000001C667479704D3456}
 	%mkv   [#{1A45DFA3} to #{428288 6D6174726F736B61}]
 	%webm  [#{1A45DFA3} to #{428284 7765626D}]
-	%mp4   [isobmf [mp4_brand | 8 skip [mp4_brand | 4 skip mp4_brand | 8 skip mp4_brand] ]]
+	;; ISO-BMFF rules checking a specific major brand must precede %mp4,
+	;; which also matches by compatible brands (isom/mp41/mp42)
 	%mov   [isobmf #{71742020}]
+	%m3gp  [4 skip #{66747970336770}]
+	%3g2   [isobmf #{336732}]
+	%3gp   [isobmf #{336770}]
+	%f4a   [isobmf #{46344120}]
+	%f4b   [isobmf #{46344220}]
+	%f4p   [isobmf #{46345020}]
+	%f4v   [isobmf #{46345620}]
+	%m4b   [isobmf #{4D344220}]
+	%m4p   [isobmf #{4D345020}]
+	%mp4   [isobmf [mp4_brand | 8 skip [mp4_brand | 4 skip mp4_brand | 8 skip mp4_brand] ]]
 	%avi   [#{52494646} [#{41564920} | 4 skip #{415649}]]
 	%wmv    #{3026B2758E66CF11A6D9}
 	%flv    #{464C5601}
 	%mpg   [#{000001} mpg_ver]
-	%m3gp  [4 skip #{66747970336770}]
 
 	%wasm  [#{0061736d} skip 3 null]
 
@@ -215,14 +225,6 @@ types: make map! [
 	%indd    #{0606EDF5D81D46E5BD31EFE7FE74B71D}
 	%pgp     #{2D2D2D2D2D424547494E20504750204D4553534147452D2D2D2D2D}
 	%skp     #{FFFE FF0E53006B0065007400630068005500700020004D006F00640065006C00}
-	%3g2    [isobmf #{336732}]
-	%3gp    [isobmf #{336770}]
-	%f4a    [isobmf #{46344120}]
-	%f4b    [isobmf #{46344220}]
-	%f4p    [isobmf #{46345020}]
-	%f4v    [isobmf #{46345620}]
-	%m4b    [isobmf #{4D344220}]
-	%m4p    [isobmf #{4D345020}]
 	%mp3    [#{494433} | mpg_sync if (0#02 == (pos and 0#06))]
 	%mp2    [mpg_sync if (0#04 == (pos and 0#06))]
 	%mp1    [mpg_sync if (0#06 == (pos and 0#06))]
