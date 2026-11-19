@@ -36,7 +36,14 @@ types: make map! [
 		#{534D4632434C4950} ; https://www.iana.org/assignments/media-types/audio/midi-clip
 	]
 	%m4a  [#{4D344120} | 4 skip #{667479704D3441}]
-	%ogg   #{4F676753}
+	;; Ogg: codec identification header of the first packet is at offset 28
+	%opus [#{4F676753} 24 skip #{4F70757348656164}] ;= "OpusHead"
+	%ogv  [#{4F676753} 24 skip #{807468656F7261}]   ;= "^(80)theora"
+	%ogm  [#{4F676753} 24 skip #{01766964656F00}]   ;= "^(01)video^@"
+	%spx  [#{4F676753} 24 skip #{5370656578202020}] ;= "Speex   "
+	%oga  [#{4F676753} 24 skip #{7F464C4143}]       ;= "^(7F)FLAC"
+	%ogg  [#{4F676753} 24 skip #{01766F72626973}]   ;= "^(01)vorbis"
+	%ogx   #{4F676753}                               ;= application/ogg (other)
 	%flac  #{664C6143}
 	%wav  [#{52494646} 4 skip #{57415645}]
 	%amr   #{2321414D52} ;= audio/amr ("#!AMR^/" or "#!AMR-WB^/")
