@@ -11,7 +11,18 @@ import mime-types ;https://src.rebol.tech/mezz/codec-mime-types.reb
 
 failed: 0
 
-foreach [type file] [
+;; old v7 tar header (no ustar magic) with a valid checksum, padded to 512 bytes
+tar-v7: append/dup copy #{
+	746573742E6A7067000000000000000000000000000000000000000000000000
+	0000000000000000000000000000000000000000000000000000000000000000
+	0000000000000000000000000000000000000000000000000000000000000000
+	0000000030303030363434003030303037363400303030313034300030303030
+	3030303433313000313232303435313536343400303036323735002030
+} #{00} 355
+;; the same header with a corrupted checksum
+tar-bad: head change skip copy tar-v7 148 #{31}
+
+foreach [type file] compose [
 	%avif %fixtures/sample.avif
 	%dds  %fixtures/sample.dds
 ;	%doc  %fixtures/sample.doc
@@ -84,6 +95,7 @@ foreach [type file] [
 	%vtt  #{57454256 5454}                                         ;; "WEBVTT" at EOF
 	%vtt  #{57454256 54540A0A}                                     ;; "WEBVTT^/^/"
 	%vtt  #{EFBBBF 57454256 54540A}                                ;; UTF-8 BOM + "WEBVTT^/"
+	%tar  (tar-v7)                                                 ;; v7 tar without ustar magic
 
 	;; formerly missing variants
 	%xml  #{EFBBBF 3C3F786D 6C207665 7273696F 6E3D}                ;; UTF-8 BOM + "<?xml version="
@@ -97,6 +109,7 @@ foreach [type file] [
 	#(none) #{52494646 41564920 4A554E4B}                          ;; "RIFFAVI JUNK" (AVI in size field)
 	#(none) #{7B202020 20202022 57454250 223A207B 7D7D0A}          ;; JSON text mentioning "WEBP"
 	#(none) #{57454256 545458}                                     ;; "WEBVTTX"
+	#(none) (tar-bad)                                              ;; v7 tar header with wrong checksum
 ][
 	result: identify file
 	prin [result TAB if result [mime-type? join %. result]]

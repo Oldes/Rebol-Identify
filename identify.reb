@@ -21,7 +21,7 @@ identify: func [
 	file [file! url! binary!]
 	;return: [none! file!] ;; this specification is available since version 3.18.5!
 ][
-	unless binary? file [file: read/part/binary file 262]
+	unless binary? file [file: read/part/binary file 512]
 	foreach [type rule] types [
 		if type: parse file [rule to end (return type)][
 			return type
@@ -143,7 +143,7 @@ types: make map! [
 
 	%wasm  [#{0061736d} skip 3 null]
 
-	%tar   [257 skip #{7573746172}]
+	%tar   [257 skip #{7573746172} | pos: if (tar-checksum? pos)] ;; ustar | old v7 header without magic
 
 
 	%ac3     #{0B77}
@@ -278,3 +278,21 @@ mp4_brand: [#{6D703432} | #{6D703431} | #{69736F6D}]
 heic_brand: [#{68656963} | #{68656978} | #{68657663} | #{68657678}] ;= heic, heix, hevc, hevx
 isobmf: [4 skip #{66747970}]
 pos: none
+tar_digit: charset [#"0" - #"7"]
+
+tar-checksum?: function [
+	"Returns true if the binary starts with a tar header with a valid checksum"
+	hdr [binary!] "Needs at least 512 bytes"
+][
+	if any [512 > length? hdr  zero? hdr/1][return false]
+	stored: 0
+	unless parse copy/part skip hdr 148 8 [
+		any #" "
+		copy digits: some tar_digit (foreach d digits [stored: stored * 8 + d - 48])
+		[null | #" "] to end
+	][	return false ]
+	sum: 256 ;; the checksum field itself is counted as 8 spaces
+	foreach b copy/part hdr 148 [sum: sum + b]
+	foreach b copy/part skip hdr 156 356 [sum: sum + b]
+	stored == sum
+]
