@@ -95,9 +95,9 @@ types: make map! [
 		]
 	]
 	%dcm  [128 skip "DICM"] ;= application/dicom
-	%dwg  "AC10"      ;= image/vnd.dwg
-	%xcf  "gimp xcf " ;= image/x-xcf ("gimp xcf file" or "gimp xcf v...")
-	%avif [           ;= image/avif
+	%dwg  "AC10"            ;= image/vnd.dwg
+	%xcf  "gimp xcf "       ;= image/x-xcf ("gimp xcf file" or "gimp xcf v...")
+	%avif [                 ;= image/avif
 		isobmf
 		[
 			"avif" | "avis" |
@@ -135,11 +135,10 @@ types: make map! [
 	%nes   ["NES" #"^(1A)"]                  ;= application/x-nintendo-nes-rom
 	%crx   "Cr24"                            ;= application/x-google-chrome-extension
 	%cab  ["MSCF" | "ISc("]                  ;= application/vnd.ms-cab-compressed
-	;%eot [8 skip [#{020001} | #{010000} | #{020002}] 23 skip #{4C50}] ;= application/octet-stream
-	%eps  [ ;= application/eps
+	%eps  [                                  ;= application/eps
 		#{C5D0D3C6} |
 		"%!PS-Adobe-" 3 skip " EPSF-"        ;= "%!PS-Adobe-XXX EPSF-XXX"
-	] 
+	]
 	%ps     "%!"                             ;= application/postscript
 	%xz     [#"^(FD)" "7zXZ" #"^(00)"]       ;= application/x-xz
 	%sqlite "SQLi"                           ;= application/vnd.sqlite3
@@ -259,17 +258,17 @@ types: make map! [
 		;Blu-ray Disc Audio-Video (BDAV) MPEG-2 transport stream has 4-byte TP_extra_header before each 188-byte packet
 		  4 skip #"^(47)" 191 skip #"^(47)"
 	]
-	%mobi   [60 skip "BOOKMOBI"]           ;= application/x-mobipocket-ebook
-	%lnk    #{4C0000000114020000000000C000000000000046} ;= application/x.ms.shortcut
-	%alias  ["book" #{00000000} "mark" #{00000000}] ;= application/x.apple.alias
-	%fbx    ["Kaydara FBX Binary  ^@" #"^(1A)"] ;= application/x.autodesk.fbx
+	%mobi   [60 skip "BOOKMOBI"]                           ;= application/x-mobipocket-ebook
+	%lnk    #{4C0000000114020000000000C000000000000046}    ;= application/x.ms.shortcut
+	%alias  ["book" #{00000000} "mark" #{00000000}]        ;= application/x.apple.alias
+	%fbx    ["Kaydara FBX Binary  ^@" #"^(1A)"]            ;= application/x.autodesk.fbx
 	%eot    [8 skip [#{000001} | #{010002} | #{020002}] 23 skip "LP"] ;= application/vnd.ms-fontobject
-	%indd   #{0606EDF5D81D46E5BD31EFE7FE74B71D} ;= application/x-indesign
-	%pgp     "-----BEGIN PGP MESSAGE-----" ;= application/pgp-encrypted
+	%indd   #{0606EDF5D81D46E5BD31EFE7FE74B71D}            ;= application/x-indesign
+	%pgp     "-----BEGIN PGP MESSAGE-----"                 ;= application/pgp-encrypted
 	%skp    #{FFFE FF0E53006B0065007400630068005500700020004D006F00640065006C00} ;= application/vnd.sketchup.skp
 	%mp3    ["ID3" | mpg_sync if (0#02 == (pos and 0#06))] ;= audio/mpeg
-	%mp2    [mpg_sync if (0#04 == (pos and 0#06))] ;= audio/mpeg
-	%mp1    [mpg_sync if (0#06 == (pos and 0#06))] ;= audio/mpeg
+	%mp2    [mpg_sync if (0#04 == (pos and 0#06))]         ;= audio/mpeg
+	%mp1    [mpg_sync if (0#06 == (pos and 0#06))]         ;= audio/mpeg
 
 	;- Documents and data
 	%djvu    ["AT&TFORM" 4 skip ["DJVU" | "DJVM"]] ;= image/vnd.djvu
@@ -308,9 +307,9 @@ types: make map! [
 	%usdc     "PXR-USDC"                  ;= model/vnd.usd
 
 	;; imprecise...
-	%ico     #{00000100}   ;= image/x-icon
-	%cur     #{00000200}   ;= image/x-icon
-	%ttf     #{0001000000} ;= font/ttf
+	%ico     #{00000100}                  ;= image/x-icon
+	%cur     #{00000200}                  ;= image/x-icon
+	%ttf     #{0001000000}                ;= font/ttf
 ]
 
 mimes: [
@@ -351,11 +350,11 @@ mimes: [
 
 ]
 mpg_ver: charset [#"^(b0)" - #"^(bf)"]
-mpg_sync: [#"^(FF)" set pos: skip if (0#E0 == (pos and 0#E0))]
-mp4_brand: ["mp42" | "mp41" | "isom"]
+mpg_sync:   [#"^(FF)" set pos: skip if (0#E0 == (pos and 0#E0))]
+mp4_brand:  ["mp42" | "mp41" | "isom"]
 heic_brand: ["heic" | "heix" | "hevc" | "hevx"]
-isobmf: [4 skip "ftyp"]
-odf_mime: [#{504B0304} 26 skip "mimetypeapplication/vnd.oasis.opendocument."]
+isobmf:     [4 skip "ftyp"]
+odf_mime:   [#{504B0304} 26 skip "mimetypeapplication/vnd.oasis.opendocument."]
 pos: none
 id3v2-size?: function [
 	"Returns total size of the ID3v2 tag at the head of the binary, or none"
@@ -367,7 +366,7 @@ id3v2-size?: function [
 		b: skip bin 6
 		zero? 128 and (b/1 or b/2 or b/3 or b/4) ;; syncsafe integer
 		10                                       ;; header
-		+ (b/1 * 2097152) + (b/2 * 16384) + (b/3 * 128) + b/4
+		+ (b/1 << 21) + (b/2 << 14) + (b/3 << 7) + b/4
 		+ either zero? 16 and bin/6 [0][10]      ;; footer present
 	]
 ]
