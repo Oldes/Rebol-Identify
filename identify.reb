@@ -117,7 +117,7 @@ types: make map! [
 	%zst   [[#"^(22)" | #"^(23)" | #"^(24)" | #"^(25)" | #"^(26)" | #"^(27)" | #"^(28)"] #{B52FFD}] ;! only Zstandard frames
 
 	
-	%m4v    #{0000001C667479704D3456}
+	%m4v   [isobmf #{4D3456}] ;; M4V , M4VH, M4VP
 	%mkv   [#{1A45DFA3} to #{428288 6D6174726F736B61}]
 	%webm  [#{1A45DFA3} to #{428284 7765626D}]
 	;; ISO-BMFF rules checking a specific major brand must precede %mp4,
