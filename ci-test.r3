@@ -63,6 +63,9 @@ foreach [type file] [
 	%heic #{00000018 66747970 6D696631 00000000 68656963 6D696631} ;; ftyp mif1 [heic mif1]
 	%avif #{00000018 66747970 6D696631 00000000 61766966 6D696631} ;; ftyp mif1 [avif mif1]
 	%heic #{0000001C 66747970 6D736631 00000000 6D736631 69736F36 68656963} ;; ftyp msf1 [msf1 iso6 heic]
+	%heic #{00000018 66747970 6D736631 00000000 6D736631 68657663} ;; ftyp msf1 [msf1 hevc]
+	%heic #{00000018 66747970 68657663 00000000 6D736631 68657663} ;; ftyp hevc [msf1 hevc]
+	%heic #{00000018 66747970 68656978 00000000 6D696631 68656978} ;; ftyp heix [mif1 heix]
 
 	;; formerly duplicated rules
 	%asf  #{3026B275 8E66CF11 A6D900AA 0062CE6C}                  ;; ASF header GUID (wmv/wma)

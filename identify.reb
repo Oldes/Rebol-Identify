@@ -61,11 +61,11 @@ types: make map! [
 	%heic [
 		isobmf
 		[
-			#{68656963} | ;heic
+			heic_brand |
 			[
 				#{6D696631} | ;mif1
 				#{6D736631}   ;msf1
-			] 4 skip [#{68656963} | 4 skip #{68656963} | 8 skip #{68656963} | 12 skip #{68656963}]
+			] 4 skip [heic_brand | 4 skip heic_brand | 8 skip heic_brand | 12 skip heic_brand]
 		]
 	]
 	%dcm  [128 skip #{4449434D}]
@@ -275,5 +275,6 @@ mimes: [
 mpg_ver: charset [#"^(b0)" - #"^(bf)"]
 mpg_sync: [#"^(FF)" set pos: skip if (0#E0 == (pos and 0#E0))]
 mp4_brand: [#{6D703432} | #{6D703431} | #{69736F6D}]
+heic_brand: [#{68656963} | #{68656978} | #{68657663} | #{68657678}] ;= heic, heix, hevc, hevx
 isobmf: [4 skip #{66747970}]
 pos: none
