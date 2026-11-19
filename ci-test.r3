@@ -71,8 +71,11 @@ foreach [type file] [
 	%amr  #{2321414D 520A}                                        ;; "#!AMR^/"
 	%amr  #{2321414D 522D5742 0A}                                 ;; "#!AMR-WB^/"
 
+	%avi  #{52494646 F4F00100 41564920 4C495354}                   ;; "RIFF....AVI LIST"
+
 	;; must not be identified
 	#(none) #{7801 010500FAFF 68656C6C6F 062C0215}                ;; zlib stream (was %dmg)
+	#(none) #{52494646 41564920 4A554E4B}                          ;; "RIFFAVI JUNK" (AVI in size field)
 ][
 	result: identify file
 	prin [result TAB if result [mime-type? join %. result]]

@@ -132,7 +132,7 @@ types: make map! [
 	%m4b    [isobmf #{4D344220}]
 	%m4p    [isobmf #{4D345020}]
 	%mp4   [isobmf [mp4_brand | 8 skip [mp4_brand | 4 skip mp4_brand | 8 skip mp4_brand] ]]
-	%avi   [#{52494646} [#{41564920} | 4 skip #{415649}]]
+	%avi   [#{52494646} 4 skip #{41564920}]
 	%asf     #{3026B2758E66CF11A6D9}
 	%flv    #{464C5601}
 	%mpg   [#{000001} mpg_ver]
