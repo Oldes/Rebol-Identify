@@ -118,8 +118,8 @@ types: make map! [
 
 	
 	%m4v   [isobmf #{4D3456}] ;; M4V , M4VH, M4VP
-	%mkv   [#{1A45DFA3} to #{428288 6D6174726F736B61}]
-	%webm  [#{1A45DFA3} to #{428284 7765626D}]
+	%mkv   [#{1A45DFA3} [to #{428288 6D6174726F736B61} | to #{428289 6D6174726F736B6100}]] ;; DocType may be null-terminated
+	%webm  [#{1A45DFA3} [to #{428284 7765626D} | to #{428285 7765626D00}]]
 	;; ISO-BMFF rules checking a specific major brand must precede %mp4,
 	;; which also matches by compatible brands (isom/mp41/mp42)
 	%mov   [

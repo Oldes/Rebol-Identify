@@ -77,6 +77,10 @@ foreach [type file] [
 	%avi  #{52494646 F4F00100 41564920 4C495354}                   ;; "RIFF....AVI LIST"
 	%mov  #{00017F42 6D6F6F76 0000006C 6D766864}                   ;; QuickTime without ftyp: moov atom first
 	%mov  #{00000008 77696465 0001F0B8 6D646174}                   ;; QuickTime without ftyp: wide + mdat
+	%webm #{1A45DFA3 01000000 00000010 42828577 65626D00 42878102} ;; DocType "webm^@"
+	%webm #{1A45DFA3 9F 428284 7765626D 42878102}                  ;; DocType "webm"
+	%mkv  #{1A45DFA3 A3 428289 6D617472 6F736B61 00 42878104}      ;; DocType "matroska^@"
+	%mkv  #{1A45DFA3 A3 428288 6D617472 6F736B61 42878104}         ;; DocType "matroska"
 
 	;; formerly missing variants
 	%xml  #{EFBBBF 3C3F786D 6C207665 7273696F 6E3D}                ;; UTF-8 BOM + "<?xml version="
