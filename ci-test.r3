@@ -49,12 +49,19 @@ foreach [type file] [
 	%mp4  #{00000018667479706D7034F2000000016D7034F26D70343100000BE66D6F}
 
 	;; ISO-BMFF files that also list isom/mp41/mp42 as compatible brands (must not be %mp4)
-	%m3gp #{00000018 66747970 33677034 00000200 69736F6D 33677034} ;; ftyp 3gp4 [isom 3gp4]
+	%3gp  #{00000018 66747970 33677034 00000200 69736F6D 33677034} ;; ftyp 3gp4 [isom 3gp4]
 	%3g2  #{00000018 66747970 33673261 00000000 69736F6D 33673261} ;; ftyp 3g2a [isom 3g2a]
 	%f4v  #{00000018 66747970 46345620 00000000 69736F6D 6D703432} ;; ftyp F4V  [isom mp42]
 	%m4b  #{00000018 66747970 4D344220 00000000 4D344120 69736F6D} ;; ftyp M4B  [M4A  isom]
 	%m4p  #{00000018 66747970 4D345020 00000000 4D344120 69736F6D} ;; ftyp M4P  [M4A  isom]
 	%mov  #{00000014 66747970 71742020 00000000 71742020}          ;; ftyp qt   [qt  ]
+
+	;; formerly duplicated rules
+	%asf  #{3026B275 8E66CF11 A6D900AA 0062CE6C}                  ;; ASF header GUID (wmv/wma)
+	%xcf  #{67696D70 20786366 2066696C 6500}                      ;; "gimp xcf file^@"
+	%xcf  #{67696D70 20786366 20763031 3100}                      ;; "gimp xcf v011^@"
+	%amr  #{2321414D 520A}                                        ;; "#!AMR^/"
+	%amr  #{2321414D 522D5742 0A}                                 ;; "#!AMR-WB^/"
 ][
 	result: identify file
 	prin [result TAB mime-type? join %. result]

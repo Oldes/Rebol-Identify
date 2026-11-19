@@ -39,7 +39,7 @@ types: make map! [
 	%ogg   #{4F676753}
 	%flac  #{664C6143}
 	%wav  [#{52494646} 4 skip #{57415645}]
-	%amr   #{2321414D520A}
+	%amr   #{2321414D52} ;= audio/amr ("#!AMR^/" or "#!AMR-WB^/")
 	%aac  [#{FFF1} | #{FFF9}]
 	%aif  [#{464F524D} 4 skip #{414946} [#"^(46)" | #"^(43)"]]
 	%jls   #{FFD8FFF7} ;; JPG7/SOF55, indicating a ISO/IEC 14495 / JPEG-LS file
@@ -70,7 +70,7 @@ types: make map! [
 	]
 	%dcm  [128 skip #{4449434D}]
 	%dwg   #{41433130}
-	%xcf   #{67696d70207863662076}
+	%xcf   #{67696D702078636620} ;= image/x-xcf ("gimp xcf file" or "gimp xcf v...")
 	%avif [
 		isobmf
 		[
@@ -123,18 +123,17 @@ types: make map! [
 	;; ISO-BMFF rules checking a specific major brand must precede %mp4,
 	;; which also matches by compatible brands (isom/mp41/mp42)
 	%mov   [isobmf #{71742020}]
-	%m3gp  [4 skip #{66747970336770}]
-	%3g2   [isobmf #{336732}]
-	%3gp   [isobmf #{336770}]
-	%f4a   [isobmf #{46344120}]
-	%f4b   [isobmf #{46344220}]
-	%f4p   [isobmf #{46345020}]
-	%f4v   [isobmf #{46345620}]
-	%m4b   [isobmf #{4D344220}]
-	%m4p   [isobmf #{4D345020}]
+	%3g2    [isobmf #{336732}]
+	%3gp    [isobmf #{336770}]
+	%f4a    [isobmf #{46344120}]
+	%f4b    [isobmf #{46344220}]
+	%f4p    [isobmf #{46345020}]
+	%f4v    [isobmf #{46345620}]
+	%m4b    [isobmf #{4D344220}]
+	%m4p    [isobmf #{4D345020}]
 	%mp4   [isobmf [mp4_brand | 8 skip [mp4_brand | 4 skip mp4_brand | 8 skip mp4_brand] ]]
 	%avi   [#{52494646} [#{41564920} | 4 skip #{415649}]]
-	%wmv    #{3026B2758E66CF11A6D9}
+	%asf     #{3026B2758E66CF11A6D9}
 	%flv    #{464C5601}
 	%mpg   [#{000001} mpg_ver]
 
@@ -163,7 +162,6 @@ types: make map! [
 	%ttc    #{74746366}   ;= font/collection
 	%macho  #{CFFAEDFE}   ;= application/x-mach-binary
 	%otf    #{4F54544F00} ;= font/otf
-	%amr    #{2321414D52} ;= audio/amr
 	%it     #{494D504D}   ;= audio/x-it
 	%lzh  [ ;= application/x-lzh-compressed
 		2 skip #{2D6C} [
@@ -186,10 +184,8 @@ types: make map! [
 	%arrow    #{4152524F57310000} ;= application/x-apache-arrow
 	%glb      #{676C544602000000} ;= model/gltf-binary
 	%orf      #{4949524F0800000018} ;= image/x-olympus-orf
-	%xcf      #{67696D702078636620} ;= image/x-xcf
 	%qcp     [#{52494646} 4 skip #{514C434D}]
 	%rw2      #{494955001800000088E774D8}
-	%asf      #{3026B2758E66CF11A6D9}
 	%ktx      #{AB4B5458203131BB0D0A1A0A}
 	%mie     [[#{7E1004} | #{7E1804}] skip #{304D4945}]
 	%shp     [2 skip #{270A} 10 null]
