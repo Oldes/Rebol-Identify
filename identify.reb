@@ -203,7 +203,11 @@ types: make map! [
 	%pst    #{2142444E} ;= application/vnd.ms-outlook
 	%parquet  #{50415231} ;= application/x-parquet
 	%ttc    #{74746366}   ;= font/collection
-	%macho  #{CFFAEDFE}   ;= application/x-mach-binary
+	%macho  [ ;= application/x-mach-binary
+		  #{CFFAEDFE} | #{CEFAEDFE} ;; 64/32-bit little-endian
+		| #{FEEDFACF} | #{FEEDFACE} ;; 64/32-bit big-endian
+		| [#{CAFEBABE} | #{CAFEBABF}] #{000000} fat_count ;; universal (fat) binary; CAFEBABE is shared with Java class files!
+	]
 	%otf    #{4F54544F00} ;= font/otf
 	%it     #{494D504D}   ;= audio/x-it
 	%lzh  [ ;= application/x-lzh-compressed
@@ -432,6 +436,7 @@ zip-type?: function [
 	]
 ]
 
+fat_count: charset [#"^(01)" - #"^(1F)"] ;; number of architectures (Java class has its version >= 45 here)
 tar_digit: charset [#"0" - #"7"]
 
 tar-checksum?: function [

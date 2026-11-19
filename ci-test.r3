@@ -141,6 +141,16 @@ foreach [type file] compose [
 	%flac #{494433 040010 00000004 00000000 334449 040010 00000004 664C6143 00000022}          ;; ID3v2.4 with footer + FLAC
 	%mp3  #{494433 030000 00001000 00000000 FFF15080}                                          ;; tag larger than the buffer
 
+	;; Mach-O vs Java class
+	%macho #{CFFAEDFE 0C000001 00000000}                           ;; 64-bit little-endian (arm64)
+	%macho #{CEFAEDFE 07000000 03000000}                           ;; 32-bit little-endian (i386)
+	%macho #{FEEDFACF 01000007 00000003}                           ;; 64-bit big-endian
+	%macho #{FEEDFACE 00000012 00000000}                           ;; 32-bit big-endian (ppc)
+	%macho #{CAFEBABE 00000002 01000007 00000003}                  ;; universal binary, 2 architectures
+	%macho #{CAFEBABF 00000002 01000007 00000003}                  ;; universal binary (64-bit offsets)
+	%class #{CAFEBABE 00000034 001D0A00}                           ;; Java 8 class file
+	%class #{CAFEBABE 00000041 001D0A00}                           ;; Java 21 class file
+
 	;; formerly missing variants
 	%xml  #{EFBBBF 3C3F786D 6C207665 7273696F 6E3D}                ;; UTF-8 BOM + "<?xml version="
 	%tiff #{49492B00 08000000 10000000 00000000}                   ;; BigTIFF little-endian
