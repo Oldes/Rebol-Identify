@@ -122,7 +122,11 @@ types: make map! [
 	%webm  [#{1A45DFA3} to #{428284 7765626D}]
 	;; ISO-BMFF rules checking a specific major brand must precede %mp4,
 	;; which also matches by compatible brands (isom/mp41/mp42)
-	%mov   [isobmf #{71742020}]
+	%mov   [
+		isobmf #{71742020}
+		;; QuickTime without ftyp box: moov, mdat, wide, free, skip or pnot atom first
+		| 4 skip [#{6D6F6F76} | #{6D646174} | #{77696465} | #{66726565} | #{736B6970} | #{706E6F74}]
+	]
 	%3g2    [isobmf #{336732}]
 	%3gp    [isobmf #{336770}]
 	%f4a    [isobmf #{46344120}]

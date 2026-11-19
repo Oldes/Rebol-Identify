@@ -72,6 +72,8 @@ foreach [type file] [
 	%amr  #{2321414D 522D5742 0A}                                 ;; "#!AMR-WB^/"
 
 	%avi  #{52494646 F4F00100 41564920 4C495354}                   ;; "RIFF....AVI LIST"
+	%mov  #{00017F42 6D6F6F76 0000006C 6D766864}                   ;; QuickTime without ftyp: moov atom first
+	%mov  #{00000008 77696465 0001F0B8 6D646174}                   ;; QuickTime without ftyp: wide + mdat
 
 	;; formerly missing variants
 	%xml  #{EFBBBF 3C3F786D 6C207665 7273696F 6E3D}                ;; UTF-8 BOM + "<?xml version="
@@ -83,6 +85,7 @@ foreach [type file] [
 	;; must not be identified
 	#(none) #{7801 010500FAFF 68656C6C6F 062C0215}                ;; zlib stream (was %dmg)
 	#(none) #{52494646 41564920 4A554E4B}                          ;; "RIFFAVI JUNK" (AVI in size field)
+	#(none) #{7B202020 20202022 57454250 223A207B 7D7D0A}          ;; JSON text mentioning "WEBP"
 ][
 	result: identify file
 	prin [result TAB if result [mime-type? join %. result]]
