@@ -20,17 +20,29 @@ identify: func [
 	"Identifies file types using their magic numbers."
 	file [file! url! binary!]
 	;return: [none! file!] ;; this specification is available since version 3.18.5!
-	/local size result
+	/local src size result
 ][
-	unless binary? file [file: read/part/binary file 512]
+	unless binary? src: file [file: read/part/binary file 512]
 	;; skip an ID3v2 tag (when complete in the buffer) and identify the content after it
 	if all [
 		size: id3v2-size? file
 		size < length? file
 		result: identify skip file size
 	][	return result ]
+	result: match-head file
+	;; ZIP based formats are resolved using the central directory (only for local files)
+	if all [result == %zip  file? src][
+		result: any [zip-type? src  result]
+	]
+	result
+]
+
+match-head: func [
+	"Returns file type matching the head of the binary using the TYPES rules"
+	bin [binary!]
+][
 	foreach [type rule] types [
-		if type: parse file [rule to end (return type)][
+		if type: parse bin [rule to end (return type)][
 			return type
 		]
 	]
@@ -319,6 +331,104 @@ id3v2-size?: function [
 		10                                       ;; header
 		+ (b/1 * 2097152) + (b/2 * 16384) + (b/3 * 128) + b/4
 		+ either zero? 16 and bin/6 [0][10]      ;; footer present
+	]
+]
+
+has-prefix?: func [
+	"Returns true if any of the strings starts with the prefix"
+	strings [block!] prefix [string!]
+][
+	foreach str strings [if find/match str prefix [return true]]
+	false
+]
+
+ooxml-types: [
+	;; main part content types in [Content_Types].xml (more specific first)
+	"ms-word.template.macroEnabledTemplate.main+xml"        %dotm
+	"ms-word.document.macroEnabled.main+xml"                %docm
+	"wordprocessingml.template.main+xml"                    %dotx
+	"wordprocessingml.document.main+xml"                    %docx
+	"ms-excel.template.macroEnabled.main+xml"               %xltm
+	"ms-excel.sheet.macroEnabled.main+xml"                  %xlsm
+	"spreadsheetml.template.main+xml"                       %xltx
+	"spreadsheetml.sheet.main+xml"                          %xlsx
+	"ms-powerpoint.template.macroEnabled.main+xml"          %potm
+	"ms-powerpoint.presentation.macroEnabled.main+xml"      %pptm
+	"presentationml.template.main+xml"                      %potx
+	"presentationml.presentation.main+xml"                  %pptx
+]
+
+read-zip-entry: function [
+	"Reads and decompresses a ZIP entry, or returns none"
+	file   [file!]
+	method [integer!] "0 = stored, 8 = deflate"
+	csize  [integer!] "Compressed size"
+	offset [integer!] "Offset of the local file header"
+][
+	attempt [
+		lh: read/seek/part file offset 30
+		unless find/match lh #{504B0304} [return none]
+		binary/read lh [SKIP 26 nlen: UI16LE elen: UI16LE]
+		data: read/seek/part file (offset + 30 + nlen + elen) csize
+		switch method [
+			0 [data]
+			8 [decompress data 'deflate]
+		]
+	]
+]
+
+zip-type?: function [
+	"Returns specific type of a ZIP based file using its central directory, or none"
+	file [file!]
+][
+	unless all [size: size? file  size >= 22][return none]
+	;; the end of central directory record is within the last 22 + 65535 bytes
+	len: min size 65557
+	unless all [
+		bin: attempt [read/seek/part file size - len len]
+		eocd: find/last bin #{504B0506}
+		22 <= length? eocd
+	][	return none ]
+	binary/read eocd [SKIP 12 cd-size: UI32LE cd-offset: UI32LE]
+	if any [cd-size = 0#FFFFFFFF  cd-offset = 0#FFFFFFFF][return none] ;; ZIP64
+	unless cd: attempt [read/seek/part file cd-offset cd-size][return none]
+
+	names: make block! 32
+	content-types: none
+	while [all [46 <= length? cd  find/match cd #{504B0102}]][
+		binary/read cd [
+			SKIP 10 method: UI16LE
+			SKIP 8  csize:  UI32LE
+			SKIP 4  nlen:   UI16LE elen: UI16LE clen: UI16LE
+			SKIP 8  offset: UI32LE
+		]
+		append names name: to string! copy/part skip cd 46 nlen
+		if name == "[Content_Types].xml" [
+			content-types: reduce [method csize offset]
+		]
+		cd: skip cd 46 + nlen + elen + clen
+	]
+
+	case [
+		find names "AndroidManifest.xml"   [%apk]
+		find names "META-INF/mozilla.rsa"  [%xpi]
+		find names "3D/3dmodel.model"      [%3mf]
+		has-prefix? names "visio/"         [%vsdx]
+		content-types [
+			if xml: read-zip-entry file content-types/1 content-types/2 content-types/3 [
+				xml: to string! xml
+				foreach [ct type] ooxml-types [
+					if find xml ct [return type]
+				]
+			]
+			;; fallback when the content types are not available
+			case [
+				has-prefix? names "word/" [%docx]
+				has-prefix? names "xl/"   [%xlsx]
+				has-prefix? names "ppt/"  [%pptx]
+			]
+		]
+		find names "META-INF/MANIFEST.MF"  [%jar]
 	]
 ]
 

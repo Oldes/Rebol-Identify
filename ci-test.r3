@@ -26,7 +26,7 @@ foreach [type file] compose [
 	%avif %fixtures/sample.avif
 	%dds  %fixtures/sample.dds
 ;	%doc  %fixtures/sample.doc
-;	%docx %fixtures/sample.docx
+	%docx %fixtures/sample.docx
 	%gif  %fixtures/sample.gif
 	%heic %fixtures/sample.heic
 	%jp2  %fixtures/sample.jp2
@@ -41,15 +41,32 @@ foreach [type file] compose [
 	%pdf  %fixtures/sample.pdf
 	%png  %fixtures/sample.png
 ;	%ppt  %fixtures/sample.ppt
-;	%pptx %fixtures/sample.pptx
+	%pptx %fixtures/sample.pptx
 	%tar  %fixtures/sample.tar
 	%tiff %fixtures/sample.tif
 	%wav  %fixtures/sample.wav
 	%webp %fixtures/sample.webp
 ;	%xls  %fixtures/sample.xls
-;	%xlsx %fixtures/sample.xlsx
+	%xlsx %fixtures/sample.xlsx
 	%zip  %fixtures/sample.zip
 	%zst  %fixtures/sample.zst
+
+	;; ZIP based formats (resolved using the central directory)
+	%docm %fixtures/sample.docm
+	%dotx %fixtures/sample.dotx
+	%dotm %fixtures/sample.dotm
+	%xlsm %fixtures/sample.xlsm
+	%xltx %fixtures/sample.xltx
+	%xltm %fixtures/sample.xltm ;; stored [Content_Types].xml (method 0)
+	%pptm %fixtures/sample.pptm
+	%potx %fixtures/sample.potx
+	%potm %fixtures/sample.potm
+	%vsdx %fixtures/sample.vsdx
+	%3mf  %fixtures/sample.3mf
+	%jar  %fixtures/sample.jar
+	%apk  %fixtures/sample.apk
+	%xpi  %fixtures/sample.xpi
+	%zip  (read/part/binary %fixtures/sample.docx 512) ;; binary input cannot be resolved
 
 	%jpx  #{0000000C6A5020200D0A870A00000000667479706A707820}
 	%cr2  #{49492A00 00000000 4352}
