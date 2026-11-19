@@ -59,6 +59,11 @@ foreach [type file] [
 	%m4v  #{00000020 66747970 4D345620 00000001 4D345620 4D344120 6D703432 69736F6D} ;; ftyp M4V  [M4V  M4A  mp42 isom]
 	%m4v  #{00000018 66747970 4D345648 00000001 4D345648 6D703432} ;; ftyp M4VH [M4VH mp42]
 
+	;; HEIF with mif1/msf1 major brand; heic/avif as the first compatible brand (offset 16)
+	%heic #{00000018 66747970 6D696631 00000000 68656963 6D696631} ;; ftyp mif1 [heic mif1]
+	%avif #{00000018 66747970 6D696631 00000000 61766966 6D696631} ;; ftyp mif1 [avif mif1]
+	%heic #{0000001C 66747970 6D736631 00000000 6D736631 69736F36 68656963} ;; ftyp msf1 [msf1 iso6 heic]
+
 	;; formerly duplicated rules
 	%asf  #{3026B275 8E66CF11 A6D900AA 0062CE6C}                  ;; ASF header GUID (wmv/wma)
 	%xcf  #{67696D70 20786366 2066696C 6500}                      ;; "gimp xcf file^@"
