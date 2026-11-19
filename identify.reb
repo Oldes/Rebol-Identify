@@ -54,7 +54,7 @@ types: make map! [
 	%gif   #{474946}
 	%webp [#{52494646} 4 skip #{574542505650}]
 	%cr2  [[#{49492A00} | #{4D4D002A}] 4 skip #{4352}]
-	%tiff [[#{49492A00} | #{4D4D002A}] 4 skip not #{4352}]
+	%tiff [[#{49492A00} | #{4D4D002A}] 4 skip not #{4352} | #{49492B00} | #{4D4D002B}] ;; TIFF | BigTIFF
 	%bmp   #{424D}
 	%jxr   #{4949BC}
 	%psd   #{38425053}
@@ -143,7 +143,7 @@ types: make map! [
 
 
 	%ac3     #{0B77}
-	%cpio   [#{C771} | [#{3037303730} [#"^(37)" | #"^(31)" | #"^(32)"]]]
+	%cpio   [#{C771} | #{71C7} | [#{3037303730} [#"^(37)" | #"^(31)" | #"^(32)"]]]
 	%arj     #{60EA}
 	%mpc    [#{4D502B} | #{4D50434B}]
 	%avro    #{4F626A01} ;= application/avro
@@ -174,6 +174,7 @@ types: make map! [
 	%drc   #{445241434F} ;= application/vnd.google.draco
 	%xml [
 		#{3C3F786D6C20} |
+		#{EFBBBF 3C3F786D6C20} |
 		#{FFFE 3C003F0078006D006C00} |
 		#{FEFF 003C003F0078006D006C}
 	]
