@@ -189,6 +189,8 @@ foreach [type file] compose [
 	%ply      #{706C790A 666F726D 6174}                                         ;; "ply^/format"
 	%usdc     #{5058522D 55534443 00}
 	#(none)   #{50380A}                                                         ;; "P8" is not Netpbm
+	#(none)   #{25706466 2D312E37}                                              ;; "%pdf-1.7": string rules must stay case-sensitive
+	#(none)   #{67696638 3961}                                                  ;; "gif89a"
 
 	;; formerly missing variants
 	%xml  #{EFBBBF 3C3F786D 6C207665 7273696F 6E3D}                ;; UTF-8 BOM + "<?xml version="
