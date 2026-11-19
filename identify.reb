@@ -93,6 +93,19 @@ types: make map! [
 	%dds   #{44445320}
 	%rpm   #{edabeedb}
 	%epub [#{504B0304} 26 skip #{6D696D65747970656170706C69636174696F6E2F657075622B7A6970}]
+	;; OpenDocument: uncompressed "mimetype" entry first (templates before base types!)
+	%ott  [odf_mime #{746578742D74656D706C617465}] ;= text-template
+	%odm  [odf_mime #{746578742D6D6173746572}] ;= text-master
+	%odt  [odf_mime #{74657874}] ;= text
+	%ots  [odf_mime #{73707265616473686565742D74656D706C617465}] ;= spreadsheet-template
+	%ods  [odf_mime #{7370726561647368656574}] ;= spreadsheet
+	%otp  [odf_mime #{70726573656E746174696F6E2D74656D706C617465}] ;= presentation-template
+	%odp  [odf_mime #{70726573656E746174696F6E}] ;= presentation
+	%otg  [odf_mime #{67726170686963732D74656D706C617465}] ;= graphics-template
+	%odg  [odf_mime #{6772617068696373}] ;= graphics
+	%odf  [odf_mime #{666F726D756C61}] ;= formula
+	%odc  [odf_mime #{6368617274}] ;= chart
+	%odi  [odf_mime #{696D616765}] ;= image
 	%zip  [#{504B} [#"^(03)" | #"^(05)" | #"^(07)"] [#"^(04)" | #"^(06)" | #"^(08)"] return (%zip)]
 	%rar  [#{526172211A07} [#"^(00)" | #"^(01)"]]
 	%gz    #{1F8B08}
@@ -285,6 +298,7 @@ mpg_sync: [#"^(FF)" set pos: skip if (0#E0 == (pos and 0#E0))]
 mp4_brand: [#{6D703432} | #{6D703431} | #{69736F6D}]
 heic_brand: [#{68656963} | #{68656978} | #{68657663} | #{68657678}] ;= heic, heix, hevc, hevx
 isobmf: [4 skip #{66747970}]
+odf_mime: [#{504B0304} 26 skip #{6D696D65747970656170706C69636174696F6E2F766E642E6F617369732E6F70656E646F63756D656E742E}] ;= PK..mimetypeapplication/vnd.oasis.opendocument.
 pos: none
 tar_digit: charset [#"0" - #"7"]
 
