@@ -23,10 +23,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install Rebol for the test
-      uses: oldes/install-rebol@v3.18.0
+      uses: oldes/install-rebol@v3.23.2
 
     - name: Test Identify module
       run:  ./rebol3 ci-test.r3

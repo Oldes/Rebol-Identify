@@ -7,46 +7,54 @@ try [system/modules/identify: none unset 'identify]
 system/options/modules: what-dir
 
 import identify
-import https://src.rebol.tech/mezz/codec-mime-types.reb
+import mime-types ;https://src.rebol.tech/mezz/codec-mime-types.reb
 
 failed: 0
 
 foreach [type file] [
-	avif %fixtures/sample.avif
-	dds  %fixtures/sample.dds
-;	doc  %fixtures/sample.doc
-;	docx %fixtures/sample.docx
-	gif  %fixtures/sample.gif
-	heic %fixtures/sample.heic
-	jp2  %fixtures/sample.jp2
-	jpg  %fixtures/sample.jpg
-	jxl  %fixtures/sample.jxl
-	m4a  %fixtures/sample.m4a
-	mov  %fixtures/sample.mov
-	mp4  %fixtures/sample.mp4
-;	odp  %fixtures/sample.odp
-;	ods  %fixtures/sample.ods
-;	odt  %fixtures/sample.odt
-	pdf  %fixtures/sample.pdf
-	png  %fixtures/sample.png
-;	ppt  %fixtures/sample.ppt
-;	pptx %fixtures/sample.pptx
-	tar  %fixtures/sample.tar
-	tiff %fixtures/sample.tif
-	wav  %fixtures/sample.wav
-	webp %fixtures/sample.webp
-;	xls  %fixtures/sample.xls
-;	xlsx %fixtures/sample.xlsx
-	zip  %fixtures/sample.zip
-	zst  %fixtures/sample.zst
+	%avif %fixtures/sample.avif
+	%dds  %fixtures/sample.dds
+;	%doc  %fixtures/sample.doc
+;	%docx %fixtures/sample.docx
+	%gif  %fixtures/sample.gif
+	%heic %fixtures/sample.heic
+	%jp2  %fixtures/sample.jp2
+	%jpg  %fixtures/sample.jpg
+	%jxl  %fixtures/sample.jxl
+	%m4a  %fixtures/sample.m4a
+	%mov  %fixtures/sample.mov
+	%mp4  %fixtures/sample.mp4
+;	%odp  %fixtures/sample.odp
+;	%ods  %fixtures/sample.ods
+;	%odt  %fixtures/sample.odt
+	%pdf  %fixtures/sample.pdf
+	%png  %fixtures/sample.png
+;	%ppt  %fixtures/sample.ppt
+;	%pptx %fixtures/sample.pptx
+	%tar  %fixtures/sample.tar
+	%tiff %fixtures/sample.tif
+	%wav  %fixtures/sample.wav
+	%webp %fixtures/sample.webp
+;	%xls  %fixtures/sample.xls
+;	%xlsx %fixtures/sample.xlsx
+	%zip  %fixtures/sample.zip
+	%zst  %fixtures/sample.zst
 
-	jpx  #{0000000C6A5020200D0A870A00000000667479706A707820}
-	cr2  #{49492A00 00000000 4352}
-	tiff #{49492A00 00000000 FFFF}
-	mp3  #{FFFAAA}
-	epub #{504B0304140000080000FC687D5A6F61AB2C1400000014000000080000006D696D65747970656170706C69636174696F6E2F657075622B7A6970504B0304140000080800DD}
-	mpg  #{000001b4}
-	mp4  #{00000018667479706D7034F2000000016D7034F26D70343100000BE66D6F}
+	%jpx  #{0000000C6A5020200D0A870A00000000667479706A707820}
+	%cr2  #{49492A00 00000000 4352}
+	%tiff #{49492A00 00000000 FFFF}
+	%mp3  #{FFFAAA}
+	%epub #{504B0304140000080000FC687D5A6F61AB2C1400000014000000080000006D696D65747970656170706C69636174696F6E2F657075622B7A6970504B0304140000080800DD}
+	%mpg  #{000001b4}
+	%mp4  #{00000018667479706D7034F2000000016D7034F26D70343100000BE66D6F}
+
+	;; ISO-BMFF files that also list isom/mp41/mp42 as compatible brands (must not be %mp4)
+	%m3gp #{00000018 66747970 33677034 00000200 69736F6D 33677034} ;; ftyp 3gp4 [isom 3gp4]
+	%3g2  #{00000018 66747970 33673261 00000000 69736F6D 33673261} ;; ftyp 3g2a [isom 3g2a]
+	%f4v  #{00000018 66747970 46345620 00000000 69736F6D 6D703432} ;; ftyp F4V  [isom mp42]
+	%m4b  #{00000018 66747970 4D344220 00000000 4D344120 69736F6D} ;; ftyp M4B  [M4A  isom]
+	%m4p  #{00000018 66747970 4D345020 00000000 4D344120 69736F6D} ;; ftyp M4P  [M4A  isom]
+	%mov  #{00000014 66747970 71742020 00000000 71742020}          ;; ftyp qt   [qt  ]
 ][
 	result: identify file
 	prin [result TAB mime-type? join %. result]
