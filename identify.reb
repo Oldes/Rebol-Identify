@@ -50,42 +50,42 @@ match-head: func [
 ]
 
 types: make map! [
-	%mid  [
+	%mid  [ ;= audio/midi
 		"MThd" |
 		"SMF2CLIP" ; https://www.iana.org/assignments/media-types/audio/midi-clip
 	]
-	%m4a  ["M4A " | 4 skip "ftypM4A"]
+	%m4a  ["M4A " | 4 skip "ftypM4A"]         ;= audio/x-m4a
 	;; Ogg: codec identification header of the first packet is at offset 28
-	%opus ["OggS" 24 skip "OpusHead"]
-	%ogv  ["OggS" 24 skip #"^(80)" "theora"]
-	%ogm  ["OggS" 24 skip #"^(01)" "video^@"]
-	%spx  ["OggS" 24 skip "Speex   "]
-	%oga  ["OggS" 24 skip #"^(7F)" "FLAC"]
-	%ogg  ["OggS" 24 skip #"^(01)" "vorbis"]
-	%ogx   "OggS" ;= application/ogg (other)
-	%flac  "fLaC"
-	%wav  ["RIFF" 4 skip "WAVE"]
-	%amr   "#!AMR" ;= audio/amr ("#!AMR^/" or "#!AMR-WB^/")
-	%aac  [#"^(FF)" #"^(F1)" | #"^(FF)" #"^(F9)"]
-	%aif  ["FORM" 4 skip "AIF" [#"F" | #"C"]]
-	%jls   #{FFD8FFF7} ;; JPG7/SOF55, indicating a ISO/IEC 14495 / JPEG-LS file
-	%jpg   #{FFD8FF}
-	%jpx  [#{0000000C} 12 skip "ftypjpx "]
-	%jp2  [#{0000000C} 12 skip "ftypjp2 "]
-	%jpm  [#{0000000C} 12 skip "ftypjpm "]
-	%mj2  [#{0000000C} 12 skip "ftypmjp2"]
-	%jxl  [#"^(FF)" #"^(0A)" | #{0000000C} "JXL ^M" skip #"^(87)" #"^(0A)"]
-	%apng [#{89504e470d0a1a0a} to "acTL"] ;; simplified!
-	%png  [#"^(89)" "PNG"]
-	%gif   "GIF"
-	%webp ["RIFF" 4 skip "WEBPVP"]
-	%cr2  [["II*^@" | "MM^@*"] 4 skip "CR"]
-	%tiff [["II*^@" | "MM^@*"] 4 skip not "CR" | "II+^@" | "MM^@+"] ;; TIFF | BigTIFF
-	%bmp   "BM"
-	%jxr   #{4949BC}
-	%psd   ["8BPS" #"^(00)" #"^(01)"]
-	%psb   ["8BPS" #"^(00)" #"^(02)"] ;= Photoshop large document
-	%heic [
+	%opus ["OggS" 24 skip "OpusHead"]         ;= audio/opus
+	%ogv  ["OggS" 24 skip #"^(80)" "theora"]  ;= video/ogg
+	%ogm  ["OggS" 24 skip #"^(01)" "video^@"] ;= video/ogg
+	%spx  ["OggS" 24 skip "Speex   "]         ;= audio/ogg
+	%oga  ["OggS" 24 skip #"^(7F)" "FLAC"]    ;= audio/ogg
+	%ogg  ["OggS" 24 skip #"^(01)" "vorbis"]  ;= audio/ogg
+	%ogx   "OggS"                             ;= application/ogg (other)
+	%flac  "fLaC"                             ;= audio/flac
+	%wav  ["RIFF" 4 skip "WAVE"]              ;= audio/wav
+	%amr   "#!AMR"                            ;= audio/amr ("#!AMR^/" or "#!AMR-WB^/")
+	%aac  [#"^(FF)" #"^(F1)" | #"^(FF)" #"^(F9)"] ;= audio/aac
+	%aif  ["FORM" 4 skip "AIF" [#"F" | #"C"]] ;= audio/aiff
+	%jls   #{FFD8FFF7}                        ;= image/jls ;; JPG7/SOF55, indicating a ISO/IEC 14495 / JPEG-LS file
+	%jpg   #{FFD8FF}                          ;= image/jpeg
+	%jpx  [#{0000000C} 12 skip "ftypjpx "]    ;= image/jpx
+	%jp2  [#{0000000C} 12 skip "ftypjp2 "]    ;= image/jp2
+	%jpm  [#{0000000C} 12 skip "ftypjpm "]    ;= image/jpm
+	%mj2  [#{0000000C} 12 skip "ftypmjp2"]    ;= video/mj2
+	%jxl  [#"^(FF)" #"^(0A)" | #{0000000C} "JXL ^M" skip #"^(87)" #"^(0A)"] ;= image/jxl
+	%apng [#{89504e470d0a1a0a} to "acTL"]     ;= image/apng ;; simplified!
+	%png  [#"^(89)" "PNG"]                    ;= image/png
+	%gif   "GIF"                              ;= image/gif
+	%webp ["RIFF" 4 skip "WEBPVP"]            ;= image/webp
+	%cr2  [["II*^@" | "MM^@*"] 4 skip "CR"]   ;= image/x-canon-cr2
+	%tiff [["II*^@" | "MM^@*"] 4 skip not "CR" | "II+^@" | "MM^@+"] ;= image/tiff ;; TIFF | BigTIFF
+	%bmp   "BM"                               ;= image/bmp
+	%jxr   #{4949BC}                          ;= image/vnd.ms-photo
+	%psd   ["8BPS" #"^(00)" #"^(01)"]         ;= image/vnd.adobe.photoshop
+	%psb   ["8BPS" #"^(00)" #"^(02)"]         ;= image/vnd.adobe.photoshop (large document)
+	%heic [                                   ;= image/heic
 		isobmf
 		[
 			heic_brand |
@@ -94,10 +94,10 @@ types: make map! [
 			] 4 skip [heic_brand | 4 skip heic_brand | 8 skip heic_brand | 12 skip heic_brand]
 		]
 	]
-	%dcm  [128 skip "DICM"]
-	%dwg  "AC10"
+	%dcm  [128 skip "DICM"] ;= application/dicom
+	%dwg  "AC10"      ;= image/vnd.dwg
 	%xcf  "gimp xcf " ;= image/x-xcf ("gimp xcf file" or "gimp xcf v...")
-	%avif [
+	%avif [           ;= image/avif
 		isobmf
 		[
 			"avif" | "avis" |
@@ -106,88 +106,88 @@ types: make map! [
 			] 4 skip ["avif" | 4 skip "avif" | 8 skip "avif" | 12 skip "avif"]
 		]
 	]
-	%qoi   "qoif"
-	%dds   "DDS "
-	%rpm   #{edabeedb}
-	%epub [#{504B0304} 26 skip "mimetypeapplication/epub+zip"]
+	%qoi   "qoif"      ;= image/qoi
+	%dds   "DDS "      ;= image/vnd-ms.dds
+	%rpm   #{edabeedb} ;= application/x-rpm
+	%epub [#{504B0304} 26 skip "mimetypeapplication/epub+zip"] ;= application/epub+zip
 	;; OpenDocument: uncompressed "mimetype" entry first (templates before base types!)
-	%ott  [odf_mime "text-template"]
-	%odm  [odf_mime "text-master"]
-	%odt  [odf_mime "text"]
-	%ots  [odf_mime "spreadsheet-template"]
-	%ods  [odf_mime "spreadsheet"]
-	%otp  [odf_mime "presentation-template"]
-	%odp  [odf_mime "presentation"]
-	%otg  [odf_mime "graphics-template"]
-	%odg  [odf_mime "graphics"]
-	%odf  [odf_mime "formula"]
-	%odc  [odf_mime "chart"]
-	%odi  [odf_mime "image"]
-	%zip  ["PK" [#"^(03)" | #"^(05)" | #"^(07)"] [#"^(04)" | #"^(06)" | #"^(08)"] return (%zip)]
-	%rar  ["Rar!" #"^(1A)" #"^(07)" [#"^(00)" | #"^(01)"]]
-	%gz   #{1F8B08}
-	%bz2   "BZh"
-	%7z   #{377ABCAF271C}
-	%pdf  [opt #{EFBBBF} "%PDF"]
-	%exe   "MZ"
-	%swf  ["FWS" | "CWS" | "ZWS"]
-	%rtf   "{\rtf" ;= application/rtf
-	%nes   ["NES" #"^(1A)"]   ;= application/x-nintendo-nes-rom
-	%crx   "Cr24"   ;= application/x-google-chrome-extension
-	%cab  ["MSCF" | "ISc("] ;= application/vnd.ms-cab-compressed
+	%ott  [odf_mime "text-template"]         ;= application/vnd.oasis.opendocument.text-template
+	%odm  [odf_mime "text-master"]           ;= application/vnd.oasis.opendocument.text-master
+	%odt  [odf_mime "text"]                  ;= application/vnd.oasis.opendocument.text
+	%ots  [odf_mime "spreadsheet-template"]  ;= application/vnd.oasis.opendocument.spreadsheet-template
+	%ods  [odf_mime "spreadsheet"]           ;= application/vnd.oasis.opendocument.spreadsheet
+	%otp  [odf_mime "presentation-template"] ;= application/vnd.oasis.opendocument.presentation-template
+	%odp  [odf_mime "presentation"]          ;= application/vnd.oasis.opendocument.presentation
+	%otg  [odf_mime "graphics-template"]     ;= application/vnd.oasis.opendocument.graphics-template
+	%odg  [odf_mime "graphics"]              ;= application/vnd.oasis.opendocument.graphics
+	%odf  [odf_mime "formula"]               ;= application/vnd.oasis.opendocument.formula
+	%odc  [odf_mime "chart"]                 ;= application/vnd.oasis.opendocument.chart
+	%odi  [odf_mime "image"]                 ;= application/vnd.oasis.opendocument.image
+	%zip  ["PK" [#"^(03)" | #"^(05)" | #"^(07)"] [#"^(04)" | #"^(06)" | #"^(08)"] return (%zip)] ;= application/zip
+	%rar  ["Rar!" #"^(1A)" #"^(07)" [#"^(00)" | #"^(01)"]] ;= application/vnd.rar
+	%gz   #{1F8B08}                          ;= application/gzip
+	%bz2   "BZh"                             ;= application/x-bzip2
+	%7z   #{377ABCAF271C}                    ;= application/x-7z-compressed
+	%pdf  [opt #{EFBBBF} "%PDF"]             ;= application/pdf
+	%exe   "MZ"                              ;= application/x-msdownload
+	%swf  ["FWS" | "CWS" | "ZWS"]            ;= application/x-shockwave-flash
+	%rtf   "{\rtf"                           ;= application/rtf
+	%nes   ["NES" #"^(1A)"]                  ;= application/x-nintendo-nes-rom
+	%crx   "Cr24"                            ;= application/x-google-chrome-extension
+	%cab  ["MSCF" | "ISc("]                  ;= application/vnd.ms-cab-compressed
 	;%eot [8 skip [#{020001} | #{010000} | #{020002}] 23 skip #{4C50}] ;= application/octet-stream
-	%eps  [
+	%eps  [ ;= application/eps
 		#{C5D0D3C6} |
-		"%!PS-Adobe-" 3 skip " EPSF-" ;= "%!PS-Adobe-XXX EPSF-XXX"
+		"%!PS-Adobe-" 3 skip " EPSF-"        ;= "%!PS-Adobe-XXX EPSF-XXX"
 	] 
-	%ps     "%!"
-	%xz     [#"^(FD)" "7zXZ" #"^(00)"]
-	%sqlite "SQLi"
-	%deb    "!<arch>^/debian-binary"
-	%ar     "!<arch>"
-	%z     [#"^(1F)" #"^(A0)" | #"^(1F)" #"^(9D)"]
-	%lzop   #{894C5A4F000D0A1A}
-	%lz     "LZIP"
-	%elf   [#"^(7F)" "ELF" 48 skip]
-	%lz4    #{04224D18}
-	%br     #{ceb2cf81}
-	%zst   [[#"^(22)" | #"^(23)" | #"^(24)" | #"^(25)" | #"^(26)" | #"^(27)" | #"^(28)"] #{B52FFD}] ;! only Zstandard frames
+	%ps     "%!"                             ;= application/postscript
+	%xz     [#"^(FD)" "7zXZ" #"^(00)"]       ;= application/x-xz
+	%sqlite "SQLi"                           ;= application/vnd.sqlite3
+	%deb    "!<arch>^/debian-binary"         ;= application/vnd.debian.binary-package
+	%ar     "!<arch>"                        ;= application/x-unix-archive
+	%z     [#"^(1F)" #"^(A0)" | #"^(1F)" #"^(9D)"] ;= application/x-compress
+	%lzop   #{894C5A4F000D0A1A}              ;= application/x-lzop
+	%lz     "LZIP"                           ;= application/x-lzip
+	%elf   [#"^(7F)" "ELF" 48 skip]          ;= application/x-elf
+	%lz4    #{04224D18}                      ;= application/x-lz4
+	%br     #{ceb2cf81}                      ;= application/x-brotli
+	%zst   [[#"^(22)" | #"^(23)" | #"^(24)" | #"^(25)" | #"^(26)" | #"^(27)" | #"^(28)"] #{B52FFD}] ;= application/zstd ;! only Zstandard frames
 
 	
-	%m4v   [isobmf "M4V"] ;; "M4V ", "M4VH", "M4VP"
-	%mkv   [#{1A45DFA3} [to #{428288 6D6174726F736B61} | to #{428289 6D6174726F736B6100}]] ;; DocType may be null-terminated
-	%webm  [#{1A45DFA3} [to #{428284 7765626D} | to #{428285 7765626D00}]]
+	%m4v   [isobmf "M4V"] ;= video/x-m4v ;; "M4V ", "M4VH", "M4VP"
+	%mkv   [#{1A45DFA3} [to #{428288 6D6174726F736B61} | to #{428289 6D6174726F736B6100}]] ;= video/x-matroska ;; DocType may be null-terminated
+	%webm  [#{1A45DFA3} [to #{428284 7765626D} | to #{428285 7765626D00}]] ;= video/webm
 	;; ISO-BMFF rules checking a specific major brand must precede %mp4,
 	;; which also matches by compatible brands (isom/mp41/mp42)
-	%mov   [
+	%mov   [ ;= video/quicktime
 		isobmf "qt  "
 		;; QuickTime without ftyp box: moov, mdat, wide, free, skip or pnot atom first
 		| 4 skip ["moov" | "mdat" | "wide" | "free" | "skip" | "pnot"]
 	]
-	%3g2   [isobmf "3g2" ]
-	%3gp   [isobmf "3gp" ]
-	%f4a   [isobmf "F4A "]
-	%f4b   [isobmf "F4B "]
-	%f4p   [isobmf "F4P "]
-	%f4v   [isobmf "F4V "]
-	%m4b   [isobmf "M4B "]
-	%m4p   [isobmf "M4P "]
-	%cr3   [isobmf "crx "] ;= image/x-canon-cr3
-	%mp4   [isobmf [mp4_brand | 8 skip [mp4_brand | 4 skip mp4_brand | 8 skip mp4_brand] ]]
-	%avi   ["RIFF" 4 skip "AVI "]
-	%asf     #{3026B2758E66CF11A6D9}
-	%flv    ["FLV" #"^(01)"]
-	%mpg   [#{000001} mpg_ver]
+	%3g2   [isobmf "3g2" ]              ;= video/3gpp2
+	%3gp   [isobmf "3gp" ]              ;= video/3gpp
+	%f4a   [isobmf "F4A "]              ;= audio/mp4
+	%f4b   [isobmf "F4B "]              ;= audio/mp4
+	%f4p   [isobmf "F4P "]              ;= video/mp4
+	%f4v   [isobmf "F4V "]              ;= video/mp4
+	%m4b   [isobmf "M4B "]              ;= audio/mp4
+	%m4p   [isobmf "M4P "]              ;= audio/mp4
+	%cr3   [isobmf "crx "]              ;= image/x-canon-cr3
+	%mp4   [isobmf [mp4_brand | 8 skip [mp4_brand | 4 skip mp4_brand | 8 skip mp4_brand] ]] ;= video/mp4
+	%avi   ["RIFF" 4 skip "AVI "]       ;= video/vnd.avi
+	%asf     #{3026B2758E66CF11A6D9}    ;= application/vnd.ms-asf
+	%flv    ["FLV" #"^(01)"]            ;= video/x-flv
+	%mpg   [#{000001} mpg_ver]          ;= video/mpeg
 
-	%wasm  [#"^(00)" "asm" skip 3 null]
+	%wasm  [#"^(00)" "asm" skip 3 null] ;= application/wasm
 
-	%tar   [257 skip "ustar" | pos: if (tar-checksum? pos)] ;; ustar | old v7 header without magic
+	%tar   [257 skip "ustar" | pos: if (tar-checksum? pos)] ;= application/x-tar ;; ustar | old v7 header without magic
 
 
-	%ac3    [#"^(0B)" #"^(77)"]
-	%cpio   [#"^(C7)" #"^(71)" | #"^(71)" #"^(C7)" | ["07070" [#"7" | #"1" | #"2"]]]
-	%arj    [#"^(60)" #"^(EA)"]
-	%mpc    ["MP+" | "MPCK"]
+	%ac3    [#"^(0B)" #"^(77)"]             ;= audio/vnd.dolby.dd-raw
+	%cpio   [#"^(C7)" #"^(71)" | #"^(71)" #"^(C7)" | ["07070" [#"7" | #"1" | #"2"]]] ;= application/x-cpio
+	%arj    [#"^(60)" #"^(EA)"]             ;= application/x-arj
+	%mpc    ["MP+" | "MPCK"]                ;= audio/x-musepack
 	%avro   ["Obj" #"^(01)"]                ;= application/avro
 	%flif    "FLIF"                         ;= image/flif
 	%icns    "icns"                         ;= image/icns
@@ -214,62 +214,62 @@ types: make map! [
 			| #"z" [#"s" | #"4" | #"5"]
 		]
 	]
-	%chm   "ITSF"   ;= application/vnd.ms-htmlhelp
-	%class #{CAFEBABE}   ;= application/java-vm
-	%rm    ".RMF"   ;= application/vnd.rn-realmedia
-	%drc   "DRACO" ;= application/vnd.google.draco
-	%xml [
+	%chm   "ITSF"                                                     ;= application/vnd.ms-htmlhelp
+	%class #{CAFEBABE}                                                ;= application/java-vm
+	%rm    ".RMF"                                                     ;= application/vnd.rn-realmedia
+	%drc   "DRACO"                                                    ;= application/vnd.google.draco
+	%xml [                                                            ;= application/xml
 		"<?xml " |
 		#{EFBBBF} "<?xml " |
 		#{FFFE 3C003F0078006D006C00} |
 		#{FEFF 003C003F0078006D006C}
 	]
 	%stl    "solid " ;= model/stl
-	%blend  "BLENDER"
+	%blend  "BLENDER"                                                 ;= application/x-blender
 	%vtt   [opt #{EFBBBF} "WEBVTT" [cr | lf | tab | sp | null | end]] ;= text/vtt
-	%arrow  "ARROW1^@^@" ;= application/x-apache-arrow
-	%glb   ["glTF" #{02000000}] ;= model/gltf-binary
-	%orf   ["IIRO" #{0800000018}] ;= image/x-olympus-orf
-	%qcp   ["RIFF" 4 skip "QLCM"]
-	%rw2   ["IIU^@" #{1800000088E774D8}]
-	%ktx   [#"^(AB)" "KTX 11" #{BB0D0A1A0A}]
-	%mie   [[#{7E1004} | #{7E1804}] skip "0MIE"]
-	%shp   [2 skip #"^(27)" #"^(0A)" 10 null]
-	%j2c   #{FF4FFF51}
-	%cfb   #{D0CF11E0A1B11AE1}
-	%icc   [36 skip "acsp"]
-	%ace   [7 skip "**ACE**"]
-	%vcf    "BEGIN:VCARD"
-	%ics    "BEGIN:VCALENDAR"
-	%raf    "FUJIFILMCCD-RAW"
-	%xm     "Extended Module:"
-	%voc    "Creative Voice File"
-	%asar  [
+	%arrow  "ARROW1^@^@"                                              ;= application/x-apache-arrow
+	%glb   ["glTF" #{02000000}]                                       ;= model/gltf-binary
+	%orf   ["IIRO" #{0800000018}]                                     ;= image/x-olympus-orf
+	%qcp   ["RIFF" 4 skip "QLCM"]                                     ;= audio/qcelp
+	%rw2   ["IIU^@" #{1800000088E774D8}]                              ;= image/x-panasonic-rw2
+	%ktx   [#"^(AB)" "KTX 11" #{BB0D0A1A0A}]                          ;= image/ktx
+	%mie   [[#{7E1004} | #{7E1804}] skip "0MIE"]                      ;= application/x-mie
+	%shp   [2 skip #"^(27)" #"^(0A)" 10 null]                         ;= application/x-esri-shape
+	%j2c   #{FF4FFF51}                                                ;= image/j2c
+	%cfb   #{D0CF11E0A1B11AE1}                                        ;= application/x-cfb
+	%icc   [36 skip "acsp"]                                           ;= application/vnd.iccprofile
+	%ace   [7 skip "**ACE**"]                                         ;= application/x-ace-compressed
+	%vcf    "BEGIN:VCARD"                                             ;= text/vcard
+	%ics    "BEGIN:VCALENDAR"                                         ;= text/calendar
+	%raf    "FUJIFILMCCD-RAW"                                         ;= image/x-fujifilm-raf
+	%xm     "Extended Module:"                                        ;= audio/x-xm
+	%voc    "Creative Voice File"                                     ;= audio/x-voc
+	%asar  [                                                          ;= application/x-asar
 		#{04000000}
 		12 skip "{^"files^":"
 		;; code bellow would work only if the buffer would be large enough!
 		;; 8 skip pos: if (map? try [decode 'json binary/read skip b 12 'ui32lebytes])
 	]
-	%mxf   #{060E2B34020501010D0102010102}
-	%s3m   [44 skip "SCRM"]
-	%mts   [
+	%mxf   #{060E2B34020501010D0102010102} ;= application/mxf
+	%s3m   [44 skip "SCRM"]                ;= audio/x-s3m
+	%mts   [                               ;= video/mp2t
 		;Raw MPEG-2 transport stream (188-byte packets)
 		  #"^(47)" 187 skip #"^(47)"
 		|
 		;Blu-ray Disc Audio-Video (BDAV) MPEG-2 transport stream has 4-byte TP_extra_header before each 188-byte packet
 		  4 skip #"^(47)" 191 skip #"^(47)"
 	]
-	%mobi   [60 skip "BOOKMOBI"]
-	%lnk    #{4C0000000114020000000000C000000000000046}
-	%alias  ["book" #{00000000} "mark" #{00000000}]
-	%fbx    ["Kaydara FBX Binary  ^@" #"^(1A)"]
-	%eot    [8 skip [#{000001} | #{010002} | #{020002}] 23 skip "LP"]
-	%indd   #{0606EDF5D81D46E5BD31EFE7FE74B71D}
-	%pgp     "-----BEGIN PGP MESSAGE-----"
-	%skp    #{FFFE FF0E53006B0065007400630068005500700020004D006F00640065006C00}
-	%mp3    ["ID3" | mpg_sync if (0#02 == (pos and 0#06))]
-	%mp2    [mpg_sync if (0#04 == (pos and 0#06))]
-	%mp1    [mpg_sync if (0#06 == (pos and 0#06))]
+	%mobi   [60 skip "BOOKMOBI"]           ;= application/x-mobipocket-ebook
+	%lnk    #{4C0000000114020000000000C000000000000046} ;= application/x.ms.shortcut
+	%alias  ["book" #{00000000} "mark" #{00000000}] ;= application/x.apple.alias
+	%fbx    ["Kaydara FBX Binary  ^@" #"^(1A)"] ;= application/x.autodesk.fbx
+	%eot    [8 skip [#{000001} | #{010002} | #{020002}] 23 skip "LP"] ;= application/vnd.ms-fontobject
+	%indd   #{0606EDF5D81D46E5BD31EFE7FE74B71D} ;= application/x-indesign
+	%pgp     "-----BEGIN PGP MESSAGE-----" ;= application/pgp-encrypted
+	%skp    #{FFFE FF0E53006B0065007400630068005500700020004D006F00640065006C00} ;= application/vnd.sketchup.skp
+	%mp3    ["ID3" | mpg_sync if (0#02 == (pos and 0#06))] ;= audio/mpeg
+	%mp2    [mpg_sync if (0#04 == (pos and 0#06))] ;= audio/mpeg
+	%mp1    [mpg_sync if (0#06 == (pos and 0#06))] ;= audio/mpeg
 
 	;- Documents and data
 	%djvu    ["AT&TFORM" 4 skip ["DJVU" | "DJVM"]] ;= image/vnd.djvu
@@ -308,9 +308,9 @@ types: make map! [
 	%usdc     "PXR-USDC"                  ;= model/vnd.usd
 
 	;; imprecise...
-	%ico     #{00000100}
-	%cur     #{00000200}
-	%ttf     #{0001000000}
+	%ico     #{00000100}   ;= image/x-icon
+	%cur     #{00000200}   ;= image/x-icon
+	%ttf     #{0001000000} ;= font/ttf
 ]
 
 mimes: [
