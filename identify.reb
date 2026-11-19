@@ -83,7 +83,8 @@ types: make map! [
 	%tiff [[#{49492A00} | #{4D4D002A}] 4 skip not #{4352} | #{49492B00} | #{4D4D002B}] ;; TIFF | BigTIFF
 	%bmp   #{424D}
 	%jxr   #{4949BC}
-	%psd   #{38425053}
+	%psd   #{38425053 0001}
+	%psb   #{38425053 0002} ;= Photoshop large document
 	%heic [
 		isobmf
 		[
@@ -273,6 +274,42 @@ types: make map! [
 	%mp2    [mpg_sync if (0#04 == (pos and 0#06))]
 	%mp1    [mpg_sync if (0#06 == (pos and 0#06))]
 
+	;- Documents and data
+	%djvu    [#{41542654464F524D} 4 skip [#{444A5655} | #{444A564D}]] ;= image/vnd.djvu ("AT&TFORM" + DJVU/DJVM)
+	%plist    #{62706C697374}             ;= application/x-bplist ("bplist")
+	%pem      #{2D2D2D2D2D424547494E20}   ;= application/x-pem-file ("-----BEGIN "; must follow %pgp!)
+	%mdb     [4 skip #{5374616E64617264204A6574204442}] ;= application/x-msaccess ("Standard Jet DB")
+	%accdb   [4 skip #{5374616E6461726420414345204442}] ;= application/x-msaccess ("Standard ACE DB")
+	%torrent [#{64} [#{383A616E6E6F756E6365} | #{31333A616E6E6F756E63652D6C697374}]] ;= application/x-bittorrent ("d8:announce" | "d13:announce-list")
+	;- Audio
+	%caf      #{636166660001}             ;= audio/x-caf ("caff" version 1)
+	%au       #{2E736E64}                 ;= audio/basic (".snd")
+	%dff     [#{46524D38} 8 skip #{44534420}] ;= audio/x-dff ("FRM8" + "DSD ")
+	%tta      #{54544131}                 ;= audio/x-tta ("TTA1")
+	;- Images
+	%exr      #{762F3101}                 ;= image/x-exr
+	%hdr     [#{233F} [#{52414449414E4345} | #{52474245}]] ;= image/vnd.radiance ("#?RADIANCE" | "#?RGBE")
+	%pbm     [#"P" [#"1" | #"4"] pnm_ws]  ;= image/x-portable-bitmap
+	%pgm     [#"P" [#"2" | #"5"] pnm_ws]  ;= image/x-portable-graymap
+	%ppm     [#"P" [#"3" | #"6"] pnm_ws]  ;= image/x-portable-pixmap
+	%pam     [#"P" #"7" pnm_ws]           ;= image/x-portable-arbitrarymap
+	%mng      #{8A4D4E470D0A1A0A}         ;= video/x-mng
+	%jng      #{8B4A4E470D0A1A0A}         ;= image/x-jng
+	%ktx2     #{AB4B5458203230BB0D0A1A0A} ;= image/ktx2
+	;- Archives and disk images
+	%xar      #{78617221}                 ;= application/x-xar ("xar!")
+	%squashfs [#{68737173} | #{73717368}] ;= application/x-squashfs ("hsqs" | "sqsh")
+	%qcow2    #{514649FB}                 ;= application/x-qemu-disk ("QFI^(FB)")
+	%vmdk     #{4B444D56}                 ;= application/x-vmdk ("KDMV")
+	%vhdx     #{7668647866696C65}         ;= application/x-vhdx ("vhdxfile")
+	%vhd      #{636F6E6563746978}         ;= application/x-vhd ("conectix"; dynamic disks only)
+	;- Code
+	%dex     [#{6465780A} 3 skip null]    ;= application/x-android-dex ("dex^/035^@")
+	%luac     #{1B4C7561}                 ;= application/x-lua-bytecode
+	;- 3D
+	%ply     [#{706C79} [lf | cr]]        ;= model/ply ("ply^/")
+	%usdc     #{5058522D55534443}         ;= model/vnd.usd ("PXR-USDC")
+
 	;; imprecise...
 	%ico     #{00000100}
 	%cur     #{00000200}
@@ -437,6 +474,7 @@ zip-type?: function [
 ]
 
 fat_count: charset [#"^(01)" - #"^(1F)"] ;; number of architectures (Java class has its version >= 45 here)
+pnm_ws: charset " ^-^/^M"
 tar_digit: charset [#"0" - #"7"]
 
 tar-checksum?: function [

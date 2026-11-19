@@ -151,6 +151,45 @@ foreach [type file] compose [
 	%class #{CAFEBABE 00000034 001D0A00}                           ;; Java 8 class file
 	%class #{CAFEBABE 00000041 001D0A00}                           ;; Java 21 class file
 
+	;; more common formats
+	%psd      #{38425053 0001 000000000000}
+	%psb      #{38425053 0002 000000000000}
+	%djvu     #{41542654 464F524D 00001234 444A5655 494E464F}
+	%djvu     #{41542654 464F524D 00001234 444A564D 4449524D}
+	%plist    #{62706C69 73743030 D4010203}
+	%pem      #{2D2D2D2D 2D424547 494E2043 45525449 46494341 54452D2D 2D2D2D0A}  ;; "-----BEGIN CERTIFICATE-----^/"
+	%pgp      #{2D2D2D2D2D424547494E20504750204D4553534147452D2D2D2D2D0A}       ;; must stay %pgp
+	%mdb      #{00010000 5374616E 64617264 204A6574 20444200}
+	%accdb    #{00010000 5374616E 64617264 20414345 20444200}
+	%torrent  #{64383A61 6E6E6F75 6E636532 333A}
+	%torrent  #{6431333A 616E6E6F 756E6365 2D6C6973 746C6C}
+	%caf      #{63616666 00010000 64657363}
+	%au       #{2E736E64 00000018 FFFFFFFF 00000002}
+	%dff      #{46524D38 00000000 00001234 44534420 46564552}
+	%tta      #{54544131 01000200}
+	%exr      #{762F3101 02000000}
+	%hdr      #{233F5241 4449414E 43450A}                                       ;; "#?RADIANCE^/"
+	%hdr      #{233F5247 42450A}                                                ;; "#?RGBE^/"
+	%pbm      #{50310A}                                                         ;; "P1^/"
+	%pgm      #{50350A}                                                         ;; "P5^/"
+	%ppm      #{5036200A}                                                       ;; "P6 ^/"
+	%pam      #{50370A}                                                         ;; "P7^/"
+	%mng      #{8A4D4E47 0D0A1A0A}
+	%jng      #{8B4A4E47 0D0A1A0A}
+	%ktx2     #{AB4B5458 203230BB 0D0A1A0A}
+	%xar      #{78617221 001C0001}
+	%squashfs #{68737173 00000000}
+	%squashfs #{73717368 00000000}
+	%qcow2    #{514649FB 00000003}
+	%vmdk     #{4B444D56 01000000}
+	%vhdx     #{76686478 66696C65 4D}
+	%vhd      #{636F6E65 63746978 00000002}
+	%dex      #{6465780A 30333500}                                              ;; "dex^/035^@"
+	%luac     #{1B4C7561 54}
+	%ply      #{706C790A 666F726D 6174}                                         ;; "ply^/format"
+	%usdc     #{5058522D 55534443 00}
+	#(none)   #{50380A}                                                         ;; "P8" is not Netpbm
+
 	;; formerly missing variants
 	%xml  #{EFBBBF 3C3F786D 6C207665 7273696F 6E3D}                ;; UTF-8 BOM + "<?xml version="
 	%tiff #{49492B00 08000000 10000000 00000000}                   ;; BigTIFF little-endian
