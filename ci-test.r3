@@ -62,9 +62,12 @@ foreach [type file] [
 	%xcf  #{67696D70 20786366 20763031 3100}                      ;; "gimp xcf v011^@"
 	%amr  #{2321414D 520A}                                        ;; "#!AMR^/"
 	%amr  #{2321414D 522D5742 0A}                                 ;; "#!AMR-WB^/"
+
+	;; must not be identified
+	#(none) #{7801 010500FAFF 68656C6C6F 062C0215}                ;; zlib stream (was %dmg)
 ][
 	result: identify file
-	prin [result TAB mime-type? join %. result]
+	prin [result TAB if result [mime-type? join %. result]]
 	print either result != type [
 		++ failed
 		[as-red " FAILED!" "Expected type:" type]
