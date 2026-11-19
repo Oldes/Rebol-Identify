@@ -184,7 +184,7 @@ types: make map! [
 	]
 	%stl      #{736F6C696420} ;= model/stl
 	%blend    #{424C454E444552}
-	%vtt     [#{574542565454} [cr | lf | tab | sp | null]] ;= text/vtt
+	%vtt     [opt #{EFBBBF} #{574542565454} [cr | lf | tab | sp | null | end]] ;= text/vtt
 	%arrow    #{4152524F57310000} ;= application/x-apache-arrow
 	%glb      #{676C544602000000} ;= model/gltf-binary
 	%orf      #{4949524F0800000018} ;= image/x-olympus-orf

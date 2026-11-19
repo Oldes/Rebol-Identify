@@ -81,6 +81,9 @@ foreach [type file] [
 	%webm #{1A45DFA3 9F 428284 7765626D 42878102}                  ;; DocType "webm"
 	%mkv  #{1A45DFA3 A3 428289 6D617472 6F736B61 00 42878104}      ;; DocType "matroska^@"
 	%mkv  #{1A45DFA3 A3 428288 6D617472 6F736B61 42878104}         ;; DocType "matroska"
+	%vtt  #{57454256 5454}                                         ;; "WEBVTT" at EOF
+	%vtt  #{57454256 54540A0A}                                     ;; "WEBVTT^/^/"
+	%vtt  #{EFBBBF 57454256 54540A}                                ;; UTF-8 BOM + "WEBVTT^/"
 
 	;; formerly missing variants
 	%xml  #{EFBBBF 3C3F786D 6C207665 7273696F 6E3D}                ;; UTF-8 BOM + "<?xml version="
@@ -93,6 +96,7 @@ foreach [type file] [
 	#(none) #{7801 010500FAFF 68656C6C6F 062C0215}                ;; zlib stream (was %dmg)
 	#(none) #{52494646 41564920 4A554E4B}                          ;; "RIFFAVI JUNK" (AVI in size field)
 	#(none) #{7B202020 20202022 57454250 223A207B 7D7D0A}          ;; JSON text mentioning "WEBP"
+	#(none) #{57454256 545458}                                     ;; "WEBVTTX"
 ][
 	result: identify file
 	prin [result TAB if result [mime-type? join %. result]]
