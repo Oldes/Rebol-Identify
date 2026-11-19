@@ -20,8 +20,15 @@ identify: func [
 	"Identifies file types using their magic numbers."
 	file [file! url! binary!]
 	;return: [none! file!] ;; this specification is available since version 3.18.5!
+	/local size result
 ][
 	unless binary? file [file: read/part/binary file 512]
+	;; skip an ID3v2 tag (when complete in the buffer) and identify the content after it
+	if all [
+		size: id3v2-size? file
+		size < length? file
+		result: identify skip file size
+	][	return result ]
 	foreach [type rule] types [
 		if type: parse file [rule to end (return type)][
 			return type
@@ -300,6 +307,21 @@ heic_brand: [#{68656963} | #{68656978} | #{68657663} | #{68657678}] ;= heic, hei
 isobmf: [4 skip #{66747970}]
 odf_mime: [#{504B0304} 26 skip #{6D696D65747970656170706C69636174696F6E2F766E642E6F617369732E6F70656E646F63756D656E742E}] ;= PK..mimetypeapplication/vnd.oasis.opendocument.
 pos: none
+id3v2-size?: function [
+	"Returns total size of the ID3v2 tag at the head of the binary, or none"
+	bin [binary!]
+][
+	all [
+		10 <= length? bin
+		did find/match bin #{494433}
+		b: skip bin 6
+		zero? 128 and (b/1 or b/2 or b/3 or b/4) ;; syncsafe integer
+		10                                       ;; header
+		+ (b/1 * 2097152) + (b/2 * 16384) + (b/3 * 128) + b/4
+		+ either zero? 16 and bin/6 [0][10]      ;; footer present
+	]
+]
+
 tar_digit: charset [#"0" - #"7"]
 
 tar-checksum?: function [
