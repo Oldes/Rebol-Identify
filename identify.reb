@@ -135,6 +135,7 @@ types: make map! [
 	%f4v    [isobmf #{46345620}]
 	%m4b    [isobmf #{4D344220}]
 	%m4p    [isobmf #{4D345020}]
+	%cr3    [isobmf #{63727820}] ;= image/x-canon-cr3 (ftyp crx )
 	%mp4   [isobmf [mp4_brand | 8 skip [mp4_brand | 4 skip mp4_brand | 8 skip mp4_brand] ]]
 	%avi   [#{52494646} 4 skip #{41564920}]
 	%asf     #{3026B2758E66CF11A6D9}
